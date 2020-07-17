@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Annonce index{% endblock %}
+
+{% block body %}
+    <h1>Annonce index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Auteur</th>
+                <th>Nom</th>
+                <th>Titre</th>
+                <th>Description</th>
+                <th>Prix</th>
+                <th>Ville</th>
+                <th>CodePostal</th>
+                <th>Adresse</th>
+                <th>Creation</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for annonce in annonces %}
+            <tr>
+                <td>{{ annonce.id }}</td>
+                <td>{{ annonce.auteur.pseudo }}</td>
+                <td>{{ annonce.categorie.nom }}</td>
+                <td>{{ annonce.titre }}</td>
+                <td>{{ annonce.description }}</td>
+                <td>{{ annonce.prix }}</td>
+                <td>{{ annonce.ville }}</td>
+                <td>{{ annonce.codePostal }}</td>
+                <td>{{ annonce.adresse }}</td>
+                <td>{{ annonce.creation ? annonce.creation|date('Y-m-d') : '' }}</td>
+                <td>
+                    <a href="{{ path('annonce_show', {'id': annonce.id}) }}">show</a>
+                    {% if app.user %}
+                        {% if (annonce.auteur.id == app.user.id) or is_granted('ROLE_MOD') %}
+                            <a href="{{ path('annonce_edit', {'id': annonce.id}) }}">edit</a>
+                        {% endif %}
+                        {% if (annonce.auteur.id == app.user.id) or is_granted('ROLE_MOD') %}
+                            {{ include('annonce/_delete_form.html.twig') }}
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('annonce_new') }}">Create new</a>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier profil{% endblock %}
+
+{% block body %}
+    <h1>Modifier Profil</h1>
+
+    {{ include('utilisateur/_formAdmin.html.twig', {'button_label': 'Modifier'}) }}
+
+    {{ include('utilisateur/_delete_form.html.twig') }}
+{% endblock %}

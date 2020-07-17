@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Annonce{% endblock %}
+
+{% block body %}
+    <h1>{{ annonce.titre }}</h1>
+
+    <h2>Proposé par le vendeur : {{ annonce.auteur.pseudo }}</h2>
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>email</th>
+                <th>pseudo</th>
+                <th>Telephone</th>
+            </tr>
+            <tr>
+                <td>{{ annonce.auteur.email }}</td>
+                <td>{{ annonce.auteur.pseudo }}</td>
+                <td>{{ annonce.auteur.telephone }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <a href="{{ path('utilisateur_show', {'id': annonce.auteur.id}) }}">Voir l'utilisateur</a>
+
+    <h2>Notes attribuées au vendeur</h2>
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Par :</th>
+                <th>note</th>
+                <th>avis</th>
+                <th>Le</th>
+            </tr>
+            {% for note in notes %}
+                <tr>
+                    <td>{{ note.auteur.pseudo }}</td>
+                    <td>{{ note.note }}</td>
+                    <td>{{ note.avis }}</td>
+                    <td>{{ note.creation|date('Y-m-d') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ path('note_new') }}">Soumettre une Note</a>
+
+    <h2>L'Annonce</h2>
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Titre</th>
+                <th>Description</th>
+                <th>Prix</th>
+                <th>Ville</th>
+                <th>CodePostal</th>
+                <th>Adresse</th>
+                <th>Creation</th>
+            </tr>
+            <tr>
+                <td>{{ annonce.titre }}</td>
+                <td>{{ annonce.description }}</td>
+                <td>{{ annonce.prix }}</td>
+                <td>{{ annonce.ville }}</td>
+                <td>{{ annonce.codePostal }}</td>
+                <td>{{ annonce.adresse }}</td>
+                <td>{{ annonce.creation ? annonce.creation|date('Y-m-d') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Commentaires de l'annonce</h2>
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Par :</th>
+                <th>commentaire</th>
+                <th>Le</th>
+            </tr>
+            {% for comment in comments %}
+                <tr>
+                    <td>{{ comment.auteur.pseudo }}</td>
+                    <td>{{ comment.commentaire }}</td>
+                    <td>{{ comment.creation|date('Y-m-d') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ path('commentaire_new') }}">Soumettre un Commentaire</a>
+    <br>
+
+    <hr>
+    <a href="{{ path('annonce_index') }}">back to list</a>
+    {% if app.user %}
+        {% if (annonce.auteur.id == app.user.id) or is_granted('ROLE_MOD') %}
+            <br>
+            <a href="{{ path('annonce_edit', {'id': annonce.id}) }}">editer annonce</a>
+        {% endif %}
+        {% if (annonce.auteur.id == app.user.id) or is_granted('ROLE_MOD') %}
+            {{ include('annonce/_delete_form.html.twig') }}
+        {% endif %}
+    {% endif %}
+
+{% endblock %}

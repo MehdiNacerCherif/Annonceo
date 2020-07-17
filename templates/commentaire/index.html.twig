@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commentaire index{% endblock %}
+
+{% block body %}
+    <h1>Commentaire index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Auteur</th>
+                <th>Annonce</th>
+                <th>Commentaire</th>
+                <th>Creation</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for commentaire in commentaires %}
+            <tr>
+                <td>{{ commentaire.id }}</td>
+                <td>{{ commentaire.auteur.pseudo }}</td>
+                <td>{{ commentaire.annonce.titre }}</td>
+                <td>{{ commentaire.commentaire }}</td>
+                <td>{{ commentaire.creation ? commentaire.creation|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('commentaire_show', {'id': commentaire.id}) }}">show</a>
+                    {% if app.user %}
+                        {% if commentaire.auteur.id == app.user.id %}
+                            <a href="{{ path('commentaire_edit', {'id': commentaire.id}) }}">edit</a>
+                        {% endif %}
+                        {% if (commentaire.auteur.id == app.user.id) or is_granted('ROLE_MOD') %}
+                            {{ include('commentaire/_delete_form.html.twig') }}
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('commentaire_new') }}">Create new</a>
+{% endblock %}
